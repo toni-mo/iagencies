@@ -1,0 +1,86 @@
+extends ./layout
+
+block agencies
+  main
+    .container-fluid
+      .row
+        .col-8
+          #map.map-container
+          .agency-details
+            h2.agency-title Manitoba Start
+            address
+              span.agency-address 1643 Henderson hwy.
+              br
+              |                             Winnipeg, Manitoba
+              br
+              a.agency-website(href='manitobastart.ca') www.manitobastart.ca
+            ul.list-inline
+              strong Services:
+              li.list-inline-item English language,
+              li.list-inline-item Job Search,
+              li.list-inline-item Computer Classes,
+              li.list-inline-item Resume &amp; Cover Letter help
+            p(class='agency-info')
+              | It is a long established fact that a reader will be distracted by the readable content of a page when
+              | looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,
+              | as opposed to using &apos;Content here, content here&apos;, making it look like readable English.
+              | Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text,
+              | and a search for &apos;lorem ipsum&apos; will uncover many web sites still in their infancy.
+        .col-4.side-column.border
+          // Container with tabs
+          .tabs
+            // Agencies List Tab
+            .agencies-list-tab
+              .search-container
+                form(action='/agencies/services' method="GET")
+                  //
+                    <div class="row">
+                    <div class="col">
+                    <div class="input-group mb-3">
+                    <input type="text" class="form-control form-control-lg" placeholder="Search Agencies">
+                    <div class="input-group-append">
+                    <button class="btn btn-outline-secondary">
+                    <i class="fas fa-search"></i>
+                    </button>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                  .row
+                    .offset-1.col-10.pt-3
+                      .input-group.mb-3
+                        input#address.form-control(type='text' placeholder='Enter Your Street Address, City, State OR Your ZIP Code.')
+                        .input-group-append
+                          button(id="search-address" class="btn.btn-outline-secondary" type="submit")
+                            i.fas.fa-street-view
+                          button(id="new") New Button
+                  .form-group
+                    label(for='distanceRange') Distance:
+                    input#distanceRange.form-control-range(type='range' min='0' max='50' step='1' value='0' oninput='selectDistance()')
+                    #distanceValue 0km(need to think on this)
+                  .filter-block.border.mb-3
+                  each service in data.services
+                    .form-check.mb-3
+                      input(id=service.alias+"checkbox" class="form-check-input" type='checkbox' name="services[]" value=service.alias)
+                      label(class="form-check-label mr-3" for=service.alias+"checkbox") #{service.name}
+              .agencies-list.border
+                each agency in data.agencies
+                  .agency-item(onclick=`displayAgencyInfo("${agency._id}")`)
+                    h4= agency.name
+                    div= agency._id
+                    address
+                      | #{agency.address}
+                      br
+                      |                                         Winnipeg, Manitoba
+                      br
+                      a(href=agency.website) #{agency.website}
+                
+            // Finding Route Tab (still to think through)
+            .route-tab
+  script.
+   let returnedAgencies = !{JSON.stringify(data.agencies)};
+   let returnedServices = !{JSON.stringify(data.services)};
+
+  script(src='js/script.js')
+    
+  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBsYSmDpDcfvtUrm3aLRz28Ku_NQU542Ig&callback=initMap' async='' defer='')
